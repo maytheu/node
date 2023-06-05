@@ -24,6 +24,10 @@ createReadStream("keplar.csv")
   })
   .on("error", (err) => console.log(err, "err exist"))
   .on("end", () => {
-    console.log(fileStream, `${fileStream.length} planets recorded`);
+    const planets = fileStream.map((planet) => ({
+      name: planet.kepler_name,
+      disposition: planet.koi_disposition,
+    }));
+    console.log(planets, `${fileStream.length} planets recorded`);
     console.log("steam ended");
   });
