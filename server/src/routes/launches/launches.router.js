@@ -1,8 +1,14 @@
 const { Router } = require("express");
-const { getLaunches } = require("./launches.controller");
+const {
+  getLaunches,
+  postLaunch,
+  deleteLaunch,
+} = require("./launches.controller");
 
-const launchesRouter = Router()
+const launchesRouter = Router();
 
-launchesRouter.get('/launches', getLaunches)
+launchesRouter.get("/", getLaunches);
+launchesRouter.post("/", postLaunch);
+launchesRouter.delete("/:launchId", deleteLaunch);
 
-module.exports=launchesRouter
+module.exports = launchesRouter;
