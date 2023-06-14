@@ -14,7 +14,7 @@ describe("get launch routes", () => {
 
   describe("get all launches", () => {
     test("Should return status 200", async () => {
-      await request(app).get("/launches").expect(200);
+      await request(app).get("/v1/launches").expect(200);
     });
   });
 
@@ -27,7 +27,7 @@ describe("get launch routes", () => {
     };
     test("it should return 201 launch created", async () => {
       const response = await request(app)
-        .post("/launches")
+        .post("/v1/launches")
         .send(launchData)
         .expect("Content-Type", /json/)
         .expect(201);
@@ -45,8 +45,8 @@ describe("get launch routes", () => {
 
     test("it should catch required field or blank fields", async () => {
       const response = await request(app)
-        .post("/launches")
-        .send({ mission: "nasa test", target: "kp1", launchDate: "" })
+        .post("/v1/launches")
+        .send({ mission: "nasa test", target: "Kepler-62 f", launchDate: "" })
         .expect("Content-Type", /json/)
         .expect(422);
 
@@ -55,10 +55,10 @@ describe("get launch routes", () => {
 
     test("it should catch invalid dates", async () => {
       const response = await request(app)
-        .post("/launches")
+        .post("/v1/launches")
         .send({
           mission: "hi",
-          target: "ye",
+          target: "Kepler-62 f",
           launchDate: "invalid date",
           rocket: "try",
         })
@@ -71,11 +71,11 @@ describe("get launch routes", () => {
 
   describe("Delete launch", () => {
     test("it should return 204 status", async () => {
-      await request(app).delete("/launches/100").expect(204);
+      await request(app).delete("/v1/launches/100").expect(204);
     });
 
     test("it should catch invalid launch Id", async () => {
-      const resp = await request(app).delete("/launches/1").expect(404);
+      const resp = await request(app).delete("/v1/launches/1").expect(404);
 
       expect(resp.body).toStrictEqual({ error: "launch not found" });
     });

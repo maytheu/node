@@ -14,7 +14,7 @@ describe("Should get all planets", () => {
 
   test("it should return 200 status", async () => {
     const resp = await request(app)
-      .get("/planets")
+      .get("/v1/planets")
       .expect("Content-Type", /json/)
       .expect(200);
   });
