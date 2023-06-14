@@ -2,6 +2,8 @@ const fs = require("fs");
 const { parse } = require("csv-parse");
 const path = require("path");
 
+const Planet = require("./planets.schema");
+
 const fileStream = [];
 
 //filter habitable planet
@@ -22,9 +24,12 @@ const loadStreamAsync = () => {
       .on("open", () => console.log("file opened"))
       //format the readable stram s to array of object
       .pipe(parse({ comment: "#", columns: true }))
-      .on("data", (data) => {
+      .on("data", async (data) => {
         // console.log("streaming");
-        if (isHabitablePlanet(data)) fileStream.push(data);
+        if (isHabitablePlanet(data)) {
+          //upsert data to db
+          await saveAllPlanet(data.kepler_name);
+        }
       })
       .on("error", (err) => rej(err))
       .on("end", () => {
@@ -32,9 +37,30 @@ const loadStreamAsync = () => {
           name: planet.kepler_name,
           disposition: planet.koi_disposition,
         }));
-        res()
+        res();
       });
   });
 };
 
-module.exports = { planets: fileStream, loadStreamAsync };
+async function allPlanets() {
+  try {
+    return await Planet.find({}, '-__v -_id'); 
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function saveAllPlanet(planetName) {
+  try {
+    //update only if data do not exist
+    await Planet.updateOne(
+      { kepler_name: planetName },
+      { kepler_name: planetName },
+      { upsert: true }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports = { planets: allPlanets(), loadStreamAsync };

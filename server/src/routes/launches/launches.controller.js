@@ -5,8 +5,8 @@ const {
   findLaunch,
 } = require("../../model/launches.mode");
 
-function getLaunches(req, res) {
-  res.status(200).json(allLaunches());
+async function getLaunches(req, res) {
+  res.status(200).json(await allLaunches());
 }
 
 function postLaunch(req, res) {
