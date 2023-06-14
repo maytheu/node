@@ -9,7 +9,7 @@ async function getLaunches(req, res) {
   res.status(200).json(await allLaunches());
 }
 
-function postLaunch(req, res) {
+async function postLaunch(req, res) {
   const launch = req.body;
   if (
     !launch.mission ||
@@ -25,20 +25,21 @@ function postLaunch(req, res) {
     return res.status(422).json({ error: "Invalid date" });
   }
 
-  postNewLaunch(launch);
+  await postNewLaunch(launch);
 
   return res.status(201).json(launch);
 }
 
-function deleteLaunch(req, res) {
+async function deleteLaunch(req, res) {
   const { launchId } = req.params;
-  if (!findLaunch(+launchId)) {
+  const checkLaunch = await findLaunch(launchId);
+  if (!checkLaunch) {
     return res.status(404).json({ error: "launch not found" });
   }
 
-  const aborted = removeLaunch(+launchId);
-
-  return res.status(204).json(aborted);
+  const aborted = await removeLaunch(launchId);
+  if (aborted) return res.status(204).json()
+  return res.status(400).json({ error: "Error deleting" });
 }
 
 module.exports = { getLaunches, postLaunch, deleteLaunch };
