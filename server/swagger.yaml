@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Space Api collection
+  description: Space api collection contain Nasa's kepler data containing habitable planet, it also contain history of spacex flight exploration.
+  version: 1.0.0
+  contact:
+    email: me@adetunjim.com
+
+servers:
+  - url: http://localhost:4005/v1
+  - url: https://api.adetunjim.com/api/v1/space
+
+tags:
+  - name: launches
+    description: Flight and launch information
+  - name: planets
+    description: Habitable planet returned from Kepler csv file
+
+paths:
+  /launches:
+    get:
+      tags:
+        - launches
+      summary: Fetch all launches
+      description: returns all launch data including aborted flight
+      operationId: getLaunches
+      parameters:
+        - name: page
+          in: query
+          description: Load api by page
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Indicate page size
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LaunchResp"
+
+    post:
+      tags:
+        - launches
+      summary: Schedule new launch
+      description: Launch a new kepler mission
+      operationId: postLaunches
+      requestBody:
+        description: Schedule a new launch
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target:
+                  type: string
+      responses:
+        "201":
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LaunchResp"
+
+  /planets:
+    get:
+      tags:
+        - planets
+      summary: Return habitable kepler planet
+      description: Fetch all kepler planet and return only habitable planets
+      operationId: getPlanets
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    kepler_name:
+                      type: string
+                      example: Kepler-1410 b
+
+components:
+  schemas:
+    LaunchResp:
+      type: object
+      properties:
+        launchDate:
+          type: string
+          example: 2006-03-24T22:30:00.000Z
+        flightNumber:
+          type: number
+          example: 1
+        mission:
+          type: string
+          example: FalconSat
+        rocket:
+          type: string
+          example: Falcon 1
+        target:
+          type: string
+        upcoming:
+          type: boolean
+          example: false
+        success:
+          type: boolean
+        customer:
+          type: array
+          items:
+            type: string
+            example: DARPA
