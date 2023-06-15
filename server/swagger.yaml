@@ -62,6 +62,13 @@ paths:
               properties:
                 target:
                   type: string
+                  example: Kepler-442 b
+                mission:
+                  type: string
+                launchDate:
+                  type: string
+                rocket:
+                  type: string
       responses:
         "201":
           description: created
@@ -69,6 +76,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LaunchResp"
+        "422":
+          description: Validation error
+
+  /launches/{flightNum}:
+    delete:
+      tags:
+        - launches
+      summary: Cancelled schedule launches
+      description: Change schedule launch to false
+      operationId: delLaunches
+      parameters:
+        - name: flightNum
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error deleting
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: launch not found
 
   /planets:
     get:
