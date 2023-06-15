@@ -4,9 +4,12 @@ const {
   removeLaunch,
   findLaunch,
 } = require("../../model/launches.mode");
+const { getPagination } = require("../../service/query");
 
 async function getLaunches(req, res) {
-  res.status(200).json(await allLaunches());
+  const { skip, limit } = getPagination(req.query);
+  const launches = await allLaunches(skip, limit);
+  res.status(200).json(launches);
 }
 
 async function postLaunch(req, res) {
@@ -38,7 +41,7 @@ async function deleteLaunch(req, res) {
   }
 
   const aborted = await removeLaunch(launchId);
-  if (aborted) return res.status(204).json()
+  if (aborted) return res.status(204).json();
   return res.status(400).json({ error: "Error deleting" });
 }
 

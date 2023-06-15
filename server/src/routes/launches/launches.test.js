@@ -75,7 +75,7 @@ describe("get launch routes", () => {
     });
 
     test("it should catch invalid launch Id", async () => {
-      const resp = await request(app).delete("/v1/launches/1").expect(404);
+      const resp = await request(app).delete("/v1/launches/1000").expect(404);
 
       expect(resp.body).toStrictEqual({ error: "launch not found" });
     });

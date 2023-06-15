@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const MONGO =
-  "mongodb+srv://Laue:7p4shcriIAgkEfXI@cluster0.buxmd.mongodb.net/nasa?retryWrites=true";
+const MONGO = process.env.MONGO_URL;
 
 mongoose.connection.once("open", () => console.log("Mongodb connected"));
 mongoose.connection.on("error", (e) => console.error(e));
