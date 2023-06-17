@@ -2,10 +2,12 @@ const request = require("supertest");
 
 const app = require("../../app");
 const db = require("../../service/db");
+const { loadStreamAsync } = require("../../model/planet.model");
 
 describe("get launch routes", () => {
   beforeAll(async () => {
     await db.loadDb();
+    await loadStreamAsync()
   });
 
   afterAll(async () => {
