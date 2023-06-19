@@ -20,6 +20,7 @@ app.use(
   graphqlHTTP({
     schema,
     rootValue,
+    graphiql:true
   })
 );
 
