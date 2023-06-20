@@ -5,9 +5,24 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 const path = require("path");
 
-const schemas = loadFilesSync(path.join(__dirname, "**/*.graphql"));
+// const schemas = loadFilesSync(path.join(__dirname, "**/*.graphql"));
+const schemas = loadFilesSync("**/*", { extensions: ["graphql"] });
 
-const schema = makeExecutableSchema({ typeDefs: schemas });
+const schema = makeExecutableSchema({
+  typeDefs: schemas,
+  resolvers: {
+    Query: {
+      products: async(parent, args, context, info) => {
+        console.log("product resolver");
+        const product = await Promise.resolve(parent.products);
+        return product
+      },
+      orders: (parent) => {
+        return parent.orders;
+      },
+    },
+  },
+});
 
 //defulat values
 const rootValue = {
@@ -26,4 +41,4 @@ app.use(
   })
 );
 
-app.listen(4000, () => console.log("server starting"));
+app.listen(4001, () => console.log("server starting"));
