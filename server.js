@@ -7,28 +7,18 @@ const path = require("path");
 
 // const schemas = loadFilesSync(path.join(__dirname, "**/*.graphql"));
 const schemas = loadFilesSync("**/*", { extensions: ["graphql"] });
+const resolvers = loadFilesSync(path.join(__dirname, "**/*.resolver.js"));
 
 const schema = makeExecutableSchema({
   typeDefs: schemas,
-  resolvers: {
-    Query: {
-      products: async(parent, args, context, info) => {
-        console.log("product resolver");
-        const product = await Promise.resolve(parent.products);
-        return product
-      },
-      orders: (parent) => {
-        return parent.orders;
-      },
-    },
-  },
+  resolvers: resolvers,
 });
 
-//defulat values
-const rootValue = {
-  products: require("./products/products.model"),
-  orders: require("./orders/orders.model"),
-};
+// //defulat values
+// const rootValue = {
+//   products: require("./products/products.model"),
+//   orders: require("./orders/orders.model"),
+// };
 
 const app = express();
 
@@ -36,7 +26,7 @@ app.use(
   "/graphql",
   graphqlHTTP({
     schema,
-    rootValue,
+    // rootValue,
     graphiql: true,
   })
 );

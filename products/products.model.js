@@ -1,4 +1,4 @@
-module.exports = [
+const products = [
   {
     id: "redShoe",
     description: "Red Shoe",
@@ -10,3 +10,9 @@ module.exports = [
     price: 13.55,
   },
 ];
+
+const getAllProducts = () => {
+  return products;
+};
+
+module.exports = { getAllProducts };
